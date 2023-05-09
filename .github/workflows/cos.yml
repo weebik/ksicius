@@ -1,0 +1,62 @@
+name: TestsAndDeploy
+
+on:
+  push:
+    branches: [development]
+  release:
+    types: [created]
+
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  SERVER_HOST: ${{ secrets.SERVER_HOST }}
+  SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+  SERVER_KEY: ${{ secrets.SERVER_KEY }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Lint code
+      run: npm run lint
+
+    - name: Lint Dockerfile
+      run: docker run --rm -i hadolint/hadolint < Dockerfile
+
+    - name: Run tests
+      run: npm run test
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ env.DOCKER_USERNAME }}
+        password: ${{ env.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker image
+      if: success() && startsWith(github.ref, 'refs/tags/')
+      run: |
+        docker build -t my-docker-repo:latest .
+        docker tag my-docker-repo:latest my-docker-repo:${{ github.ref }}
+        docker push my-docker-repo:latest
+        docker push my-docker-repo:${{ github.ref }}
+
+    - name: SSH into server and deploy
+      if: success() && startsWith(github.ref, 'refs/tags/')
+      uses: appleboy/ssh-action@v0.19.0
+      with:
+        host: ${{ env.SERVER_HOST }}
+        username: ${{ env.SERVER_USERNAME }}
+        key: ${{ env.SERVER_KEY }}
+        script: |
+          docker login
+          docker pull my-docker-repo:${{ github.ref }}
+          docker stop my-docker-container || true
+          docker rm my-docker-container || true
+          docker run -d --restart always --name my-docker-container my-docker-repo:${{ github.ref }}
