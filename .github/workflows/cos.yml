@@ -41,7 +41,7 @@ jobs:
       run: |
         docker build -t uwrksi/ksicius:latest .
         docker tag uwrksi/ksicius:latest uwrksi/ksicius:${{ github.ref }}
-        docker push uwrksi/ksicius:tagname
+        docker push uwrksi/ksicius:latest
         docker push uwrksi/ksicius:${{ github.ref }}
 
     - name: SSH into server and deploy
