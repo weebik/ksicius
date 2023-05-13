@@ -9,11 +9,16 @@ on:
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  
   SERVER_HOST: ${{ secrets.SERVER_HOST }}
   SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
   SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
   SERVER_KEY: ${{ secrets.SERVER_KEY }}
-  SERVER_PORT: ${{ secrets.SERVER_PORT }}
+  
+  CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  GUILD_ID: ${{ secrets.GUILD_ID }}
+  MONGO_CONNECTION_LINK: ${{ secrets.MONGO_CONNECTION_LINK }}
+  TOKEN: ${{ secrets.TOKEN }}
 
 jobs:
   build-and-deploy:
@@ -49,6 +54,11 @@ jobs:
          context: .
          file: ./Dockerfile
          tags: uwrksi/ksicius:latest
+         build-args: |
+            MONGO_CONNECTION_LINK=${{ env.MONGO_CONNECTION_LINK }}
+            CLIENT_ID=${{ env.CLIENT_ID }}
+            GUILD_ID=${{ env.GUILD_ID }}
+            TOKEN=${{ env.TOKEN }}
       
     - name: SSH into server and deploy
       if: success() && startsWith(github.ref, 'refs/tags/')
