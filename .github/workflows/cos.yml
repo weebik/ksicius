@@ -9,12 +9,10 @@ on:
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  
-  SERVER_HOST: ${{ secrets.SERVER_HOST }}
-  SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-  SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-  SERVER_KEY: ${{ secrets.SERVER_KEY }}
-  
+  SERVER_HOST: ${{ secrets.SSH_HOST }}
+  SERVER_USERNAME: ${{ secrets.SSH_USERNAME }}
+  SERVER_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+  SERVER_KEY: ${{ secrets.SSH_KEY }}
   CLIENT_ID: ${{ secrets.CLIENT_ID }}
   GUILD_ID: ${{ secrets.GUILD_ID }}
   MONGO_CONNECTION_LINK: ${{ secrets.MONGO_CONNECTION_LINK }}
