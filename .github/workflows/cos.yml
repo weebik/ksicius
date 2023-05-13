@@ -12,6 +12,7 @@ env:
   SERVER_HOST: ${{ secrets.SERVER_HOST }}
   SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
   SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+  SERVER_KEY: ${{ secrets.SERVER_KEY }}
   SERVER_PORT: ${{ secrets.SERVER_PORT }}
 
 jobs:
@@ -56,6 +57,7 @@ jobs:
         host: ${{ env.SERVER_HOST }}
         username: ${{ env.SERVER_USERNAME }}
         password: ${{ env.SERVER_PASSWORD }}
+        key: ${{ env.SERVER_KEY }}
         port: ${{ env.SERVER_PORT }}
         script: |
           docker login
