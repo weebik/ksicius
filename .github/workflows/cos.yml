@@ -38,6 +38,7 @@ jobs:
       run: docker run --rm -i hadolint/hadolint < Dockerfile
       
     - name: Set up Docker Buildx
+      if: success() && startsWith(github.ref, 'refs/tags/')
       uses: docker/setup-buildx-action@v2
         
     - name: Login to Docker Hub
@@ -63,15 +64,15 @@ jobs:
       
     - name: SSH into server and deploy
       if: success() && startsWith(github.ref, 'refs/tags/')
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v0.1.10
       with:
-        host: ${{ env.SERVER_HOST }}
-        username: ${{ env.SERVER_USERNAME }}
-        password: ${{ env.SERVER_PASSWORD }}
-        key: ${{ env.SERVER_KEY }}
-        script: |
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker pull uwrksi/ksicius:${{ github.ref }}
-          docker stop my-docker-container || true
-          docker rm my-docker-container || true
-          docker run -d --restart always --name my-docker-container uwrksi/ksicius:${{ github.ref }}
+         host: ${{ env.SERVER_HOST }}
+         username: ${{ env.SERVER_USERNAME }}
+         password: ${{ env.SERVER_PASSWORD }}
+         key: ${{ env.SERVER_KEY }}
+         script: |
+           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+           docker pull uwrksi/ksicius:${{ github.ref }}
+           docker stop ksicius_current || true
+           docker rm ksicius_current || true
+           docker run -d --restart always --name ksicius_current uwrksi/ksicius:${{ github.ref }}
