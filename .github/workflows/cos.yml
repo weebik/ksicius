@@ -55,7 +55,7 @@ jobs:
          file: ./Dockerfile
          tags: uwrksi/ksicius:latest
          build-args: |
-            MONGO_CONNECTION_LINK='123'
+            MONGO_CONNECTION_LINK=${{ env.MONGO_CONNECTION_LINK }}
             CLIENT_ID=${{ env.CLIENT_ID }}
             GUILD_ID=${{ env.GUILD_ID }}
             TOKEN=${{ env.TOKEN }}
