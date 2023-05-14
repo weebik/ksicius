@@ -63,13 +63,17 @@ jobs:
     - name: SSH into server and deploy
       if: success() && startsWith(github.ref, 'refs/tags/')
       uses: appleboy/ssh-action@v0.1.10
+      env:
+         USERNAME: ${{ env.DOCKER_USERNAME }}
+         PASSWORD: ${{ env.DOCKER_PASSWORD }}
       with:
          host: ${{ env.SERVER_HOST }}
          username: ${{ env.SERVER_USERNAME }}
          password: ${{ env.SERVER_PASSWORD }}
          key: ${{ env.SERVER_KEY }}
+         envs: USERNAME, PASSWORD
          script: |
-           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+           docker login -u $USERNAME -p $PASSWORD
            docker pull uwrksi/ksicius:${{ github.ref }}
            docker stop ksicius_current || true
            docker rm ksicius_current || true
