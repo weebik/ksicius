@@ -75,4 +75,4 @@ jobs:
          script: |
            docker login -u $USERNAME -p $PASSWORD
            docker pull uwrksi/ksicius:latest
-           docker run -d --restart always --name ksicius uwrksi/ksicius:${{ github.ref }}
+           docker run -d --restart=always --name ksicius uwrksi/ksicius:latest
