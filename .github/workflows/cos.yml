@@ -74,7 +74,7 @@ jobs:
          envs: USERNAME, PASSWORD
          script: |
            docker login -u $USERNAME -p $PASSWORD
-           docker pull uwrksi/ksicius:${{ github.ref }}
-           docker stop ksicius_current || true
-           docker rm ksicius_current || true
-           docker run -d --restart always --name ksicius_current uwrksi/ksicius:${{ github.ref }}
+           docker pull uwrksi/ksicius:latest
+           docker stop ksicius || true
+           docker rm ksicius || true
+           docker run -d --restart always --name ksicius uwrksi/ksicius:${{ github.ref }}
